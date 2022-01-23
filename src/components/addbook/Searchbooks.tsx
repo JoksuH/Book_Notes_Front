@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
-import { Input, Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
+import { Input, Button } from 'antd'
 import BookDataCard from './BookDataCard'
-
-const textStyle = {marginBottom: '3vh'}
-const imgStyle = { width: '20vw' }
-const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '10vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 
 interface bookData {
   title: String

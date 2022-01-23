@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
 
 const textStyle = {marginBottom: '3vh'}
-const imgStyle = { width: '20vw' }
 const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '10vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 
 interface data {
