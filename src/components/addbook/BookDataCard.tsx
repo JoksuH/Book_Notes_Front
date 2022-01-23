@@ -1,4 +1,4 @@
-import React from 'react'
+import React,  { useState } from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
 
 const textStyle = {marginBottom: '3vh'}
@@ -23,6 +23,21 @@ const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
 const BookDataCard: React.FC<data> = ({BookData}) =>  {
+
+  const [Saved,SetSaved] = useState<Boolean>(false)
+
+  const onAddLibrary = () => {
+    SetSaved(true)
+  }
+
+  const onAddWishlist = () => {
+    
+  }
+
+  
+  const onRemove = () => {
+    SetSaved(false)
+  }
 
   return (
     <div>
@@ -58,12 +73,18 @@ const BookDataCard: React.FC<data> = ({BookData}) =>  {
               </Col>
             </Row>
             <Row justify="center" style={textStyle} gutter={32}>
+              {!Saved ? <>
               <Col span={12}>
-                <Button>Add to Library</Button>
+                <Button type="primary" onClick={onAddLibrary}>Add to Library</Button>
               </Col>
               <Col span={12}>
                 <Button>Add to WishList</Button>
               </Col>
+              </> : 
+              <Col span={24}>
+              <Button onClick={onRemove}>Remove from Library</Button>
+            </Col>
+              }
             </Row>
           </Content>
         </Layout>

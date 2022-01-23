@@ -12,7 +12,7 @@ function Sidebar() {
               Add a Book
             </Menu.Item>
             <Menu.Item key="3" icon={<EditOutlined />}>
-              See Notes
+                Notes
             </Menu.Item>
           </Menu>   
   )

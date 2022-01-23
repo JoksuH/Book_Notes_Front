@@ -31,6 +31,7 @@ const SearchBook: React.FC = () => {
         response.json().then((json) => {
           if (json['items']) {
             let bookData = json['items'][0]['volumeInfo']
+            console.log(bookData)
             SetBookData(bookData)
           } else alert('No Books Found With The Current ISBN')
         })
