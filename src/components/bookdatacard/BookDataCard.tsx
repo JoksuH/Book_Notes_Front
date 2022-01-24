@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
 
 const textStyle = { marginBottom: '3vh' }
-const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '10vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
+const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '2vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 
 interface data {
   BookData: bookData
-  onBookAdd: () => void
+  onBookAdd?: () => void
   small?: Boolean
   rateable?: Boolean
 }
@@ -14,8 +14,10 @@ interface data {
 interface bookData {
   title: String
   description: String
-  imageLinks: imagelinks | undefined
-  authors: String[]
+  imageLinks?: imagelinks | undefined,
+  imageurl?: string,
+  authors?: String[],
+  author?: String,
   industryIdentifiers: isbnData[]
 }
 
@@ -33,8 +35,11 @@ const { Sider, Content } = Layout
 const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable }) => {
   const [Saved, SetSaved] = useState<Boolean>(false)
 
+  console.log(BookData)
+
   const onAddLibrary = () => {
     SetSaved(true)
+    if (onBookAdd)
     onBookAdd()
   }
 
@@ -43,7 +48,6 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable }) 
   const onRemove = () => {
     SetSaved(false)
   }
-
   return (
     <div>
       {BookData && (
@@ -53,14 +57,26 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable }) 
               <Image height="100%" width="100%" src={BookData.imageLinks.thumbnail} preview={false} />
             </Sider>
           )}
+          {BookData.imageurl && (
+            <Sider style={{ backgroundColor: 'white', padding: '10px' }}>
+              <Image height="150px" src={BookData.imageurl} preview={false} />
+            </Sider>
+          )}
           <Content>
             <Row justify="center" style={textStyle} gutter={32}>
               <Col span={12}>
                 Title: <Title>{BookData.title}</Title>
               </Col>
+              {BookData.authors && 
               <Col span={12}>
                 Author:<Title>{BookData.authors[0]}</Title>
               </Col>
+              }
+               {BookData.author && 
+              <Col span={12}>
+                Author:<Title>{BookData.author}</Title>
+              </Col>
+              }
             </Row>
             <Row justify="center" style={textStyle} gutter={12}>
               <Col span={24}>

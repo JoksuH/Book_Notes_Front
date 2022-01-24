@@ -1,7 +1,9 @@
 import React from 'react'
 import './App.css'
-import { Layout, Menu } from 'antd'
+import { Layout } from 'antd'
+import { Routes, Route } from 'react-router-dom'
 import SearchBook from './components/addbook/Searchbooks'
+import Mylibrary from './components/mylibrary/Mylibrary'
 import Sidebar from './components/sidebar/Sidebar'
 
 const { Sider, Content } = Layout
@@ -12,9 +14,13 @@ function App() {
       <Sider trigger={null} collapsible collapsed={false}>
         <Sidebar />
       </Sider>
-      <Content style={{backgroundColor: '#f5f4f7', height: '100vh'}}>
+      <Content style={{ backgroundColor: '#f5f4f7', height: '100vh' }}>
         <div className="App">
-          <SearchBook />
+          <Routes>
+            <Route path='/addbook' element={<SearchBook />} />
+            <Route path='/' element={<Mylibrary />} />
+
+          </Routes>
         </div>
       </Content>
     </Layout>
