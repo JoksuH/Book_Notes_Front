@@ -5,14 +5,16 @@ const textStyle = {marginBottom: '3vh'}
 const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '10vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 
 interface data {
-    BookData: bookData
+    BookData: bookData,
+    onBookAdd: () => void
 }
 
 interface bookData {
-  title: String
-  description: String
-  imageLinks: imagelinks | undefined
-  authors: String[]
+  title: String,
+  description: String,
+  imageLinks: imagelinks | undefined,
+  authors: String[],
+  industryIdentifiers: String[],
 }
 
 interface imagelinks {
@@ -22,12 +24,13 @@ interface imagelinks {
 const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
-const BookDataCard: React.FC<data> = ({BookData}) =>  {
+const BookDataCard: React.FC<data> = ({BookData, onBookAdd}) =>  {
 
   const [Saved,SetSaved] = useState<Boolean>(false)
 
   const onAddLibrary = () => {
     SetSaved(true)
+    onBookAdd()
   }
 
   const onAddWishlist = () => {
@@ -44,7 +47,7 @@ const BookDataCard: React.FC<data> = ({BookData}) =>  {
       {BookData && (
         <Layout style={layoutStyle}>
             {BookData.imageLinks && 
-          <Sider style={{backgroundColor: 'white'}}>
+          <Sider style={{backgroundColor: 'white', padding: '10px'}}>
             <Image height="100%" width="100%" src={BookData.imageLinks.thumbnail} preview={false} />
           </Sider>
           }
