@@ -1,20 +1,26 @@
-import React,  { useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
 
-const textStyle = {marginBottom: '3vh'}
+const textStyle = { marginBottom: '3vh' }
 const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '10vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 
 interface data {
-    BookData: bookData,
-    onBookAdd: () => void
+  BookData: bookData
+  onBookAdd: () => void
+  small?: Boolean
+  rateable?: Boolean
 }
 
 interface bookData {
-  title: String,
-  description: String,
-  imageLinks: imagelinks | undefined,
-  authors: String[],
-  industryIdentifiers: String[],
+  title: String
+  description: String
+  imageLinks: imagelinks | undefined
+  authors: String[]
+  industryIdentifiers: isbnData[]
+}
+
+interface isbnData {
+  identifier: String
 }
 
 interface imagelinks {
@@ -24,20 +30,16 @@ interface imagelinks {
 const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
-const BookDataCard: React.FC<data> = ({BookData, onBookAdd}) =>  {
-
-  const [Saved,SetSaved] = useState<Boolean>(false)
+const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable }) => {
+  const [Saved, SetSaved] = useState<Boolean>(false)
 
   const onAddLibrary = () => {
     SetSaved(true)
     onBookAdd()
   }
 
-  const onAddWishlist = () => {
-    
-  }
+  const onAddWishlist = () => {}
 
-  
   const onRemove = () => {
     SetSaved(false)
   }
@@ -46,11 +48,11 @@ const BookDataCard: React.FC<data> = ({BookData, onBookAdd}) =>  {
     <div>
       {BookData && (
         <Layout style={layoutStyle}>
-            {BookData.imageLinks && 
-          <Sider style={{backgroundColor: 'white', padding: '10px'}}>
-            <Image height="100%" width="100%" src={BookData.imageLinks.thumbnail} preview={false} />
-          </Sider>
-          }
+          {BookData.imageLinks && (
+            <Sider style={{ backgroundColor: 'white', padding: '10px' }}>
+              <Image height="100%" width="100%" src={BookData.imageLinks.thumbnail} preview={false} />
+            </Sider>
+          )}
           <Content>
             <Row justify="center" style={textStyle} gutter={32}>
               <Col span={12}>
@@ -65,35 +67,52 @@ const BookDataCard: React.FC<data> = ({BookData, onBookAdd}) =>  {
                 <Text italic>{BookData.description}</Text>
               </Col>
             </Row>
-            <Row justify="center" >
-              <Col span={24}>
-                <Text strong>Rate it: </Text>
-              </Col>
-            </Row>
-            <Row justify="center" style={textStyle} gutter={32}>
-              <Col span={24}>
-                <Rate allowHalf defaultValue={2.5} />
-              </Col>
-            </Row>
-            <Row justify="center" style={textStyle} gutter={32}>
-              {!Saved ? <>
-              <Col span={12}>
-                <Button type="primary" onClick={onAddLibrary}>Add to Library</Button>
-              </Col>
-              <Col span={12}>
-                <Button>Add to WishList</Button>
-              </Col>
-              </> : 
-              <Col span={24}>
-              <Button onClick={onRemove}>Remove from Library</Button>
-            </Col>
-              }
-            </Row>
+            {!small && (
+              <>
+                {rateable && (
+                  <>
+                    <Row justify="center">
+                      <Col span={24}>
+                        <Text strong>Rate it: </Text>
+                      </Col>
+                    </Row>
+                    <Row justify="center" style={textStyle} gutter={32}>
+                      <Col span={24}>
+                        <Rate allowHalf defaultValue={2.5} />
+                      </Col>
+                    </Row>
+                  </>
+                )}
+                <Row justify="center" style={textStyle} gutter={32}>
+                  {!Saved ? (
+                    <>
+                      <Col span={12}>
+                        <Button type="primary" onClick={onAddLibrary}>
+                          Add to Library
+                        </Button>
+                      </Col>
+                      <Col span={12}>
+                        <Button>Add to WishList</Button>
+                      </Col>
+                    </>
+                  ) : (
+                    <Col span={24}>
+                      <Button onClick={onRemove}>Remove from Library</Button>
+                    </Col>
+                  )}
+                </Row>
+              </>
+            )}
           </Content>
         </Layout>
       )}
     </div>
   )
+}
+
+BookDataCard.defaultProps = {
+  small: false,
+  rateable: false,
 }
 
 export default BookDataCard
