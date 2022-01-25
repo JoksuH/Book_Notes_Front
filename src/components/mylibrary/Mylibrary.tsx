@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Pagination, Row, Input } from 'antd'
+import { Pagination, Row, Input, Empty } from 'antd'
 import BookDataCard from './../bookdatacard/BookDataCard'
 
 interface bookData {
@@ -45,6 +45,7 @@ const Mylibrary: React.FC = () => {
         let filteredBooks: bookData[] = BooksData.filter((book) => book.title.toLowerCase().includes(Filter.toLowerCase()) || book.author.toLowerCase().includes(Filter.toLowerCase()))
         SetResoultsAmount(filteredBooks.length)
         SetCurrentPageBookData(filteredBooks.slice((page - 1) * 5, page * 5))
+        filteredBooks.length > 0 ? SetCurrentPageBookData(filteredBooks.slice(0, 5)) : SetCurrentPageBookData(undefined)
       } else {
         SetCurrentPageBookData(BooksData.slice((page - 1) * 5, page * 5))
         SetResoultsAmount(BooksData.length)
@@ -57,7 +58,7 @@ const Mylibrary: React.FC = () => {
     if (BooksData) {
       let filteredBooks: bookData[] = BooksData.filter((book) => book.title.toLowerCase().includes(text.toLowerCase()) || book.author.toLowerCase().includes(text.toLowerCase()))
       SetResoultsAmount(filteredBooks.length)
-      SetCurrentPageBookData(filteredBooks.slice(0, 5))
+      filteredBooks.length > 0 ? SetCurrentPageBookData(filteredBooks.slice(0, 5)) : SetCurrentPageBookData(undefined)
     }
   }
 
@@ -66,17 +67,26 @@ const Mylibrary: React.FC = () => {
       <Row>
         <Input placeholder="Filter Books" onChange={handleFilterTyping}></Input>
       </Row>
-      {CurrentPageBookData && (
+      {CurrentPageBookData ? (
         <>
-          {CurrentPageBookData.map((book: bookData) => {
+          {CurrentPageBookData.map((book: bookData, index:number) => {
             return (
               <div key={book._id}>
-                <BookDataCard BookData={book} small={true} />
+                <BookDataCard BookData={book} small={true} index={index} />
               </div>
             )
           })}
           <Pagination defaultCurrent={1} defaultPageSize={5} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
         </>
+      ) : (
+        <Empty
+          style={{ marginTop: '15vh' }}
+          description={
+            <span>
+              No Books Found!
+            </span>
+          }
+        />
       )}
     </div>
   )
