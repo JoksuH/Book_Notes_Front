@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
 
-const textStyle = { marginBottom: '3vh' }
-const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '2vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
+const textStyle = { marginBottom: '1vh' }
+const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '1vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 
 interface data {
   BookData: bookData
@@ -34,8 +34,6 @@ const { Sider, Content } = Layout
 
 const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable }) => {
   const [Saved, SetSaved] = useState<Boolean>(false)
-
-  console.log(BookData)
 
   const onAddLibrary = () => {
     SetSaved(true)

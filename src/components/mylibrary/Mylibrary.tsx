@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Row, Col } from 'antd'
+import { Pagination } from 'antd'
 import BookDataCard from './../bookdatacard/BookDataCard'
-import { AnyARecord } from 'dns'
 
 interface bookData {
  _id: string, 
@@ -22,27 +21,33 @@ interface imagelinks {
 
 const Mylibrary: React.FC = () => {
   const [BooksData, SetBooksData] = useState<any | undefined>(undefined)
+  const [CurrentPageBookData, SetCurrentPageBookData] = useState<any | undefined>(undefined)
 
    useEffect(() => {
       fetch(`http://localhost:4000/books/`).then((response) => {
         response.json().then((json) => {
           if (json) {
-            console.log(json)
             SetBooksData(json)
+            SetCurrentPageBookData(json.slice(0,5))
           } else alert('No Books Found With The Current ISBN')
         })
       })
     }, [])
 
+    const handlePageChange = (page: number) => {
+      SetCurrentPageBookData(BooksData.slice((page - 1) * 5, page * 5))
+    }
+
   return (
     <div>  
-        {BooksData && BooksData.map((book:bookData) => {
+        {CurrentPageBookData && CurrentPageBookData.map((book:bookData) => {
             return (
                 <div key={book._id}>
                     <BookDataCard BookData={book} small={true}/>
                 </div>
             )
         })}
+        <Pagination defaultCurrent={1} defaultPageSize={5} total={6} onChange={handlePageChange} style={{marginTop: '2vh'}} />
     </div>
   )
 }
