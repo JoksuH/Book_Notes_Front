@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"
 
 const textStyle = { marginBottom: '1vh' }
@@ -40,6 +41,8 @@ const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
 const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, index }) => {
+  const  navigate = useNavigate();
+
   const [Saved, SetSaved] = useState<Boolean>(false)
 
   const onAddLibrary = () => {
@@ -52,6 +55,12 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
 
   const onRemove = () => {
     SetSaved(false)
+  }
+
+  const handleBookPageOpen = () => {
+    const title:String = BookData.title
+    navigate(`/book/${title}`)
+
   }
   return (
     <motion.div    initial="hidden" animate="show" variants={listItem} custom={index}>
@@ -125,7 +134,7 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
               </>
             ): 
               <Col span={24}>
-              <Button size="large">Open</Button>
+              <Button size="large" onClick={handleBookPageOpen}>Open</Button>
               </Col>
             }
           </Content>

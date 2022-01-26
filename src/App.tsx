@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom'
 import SearchBook from './components/addbook/Searchbooks'
 import Mylibrary from './components/mylibrary/Mylibrary'
 import Sidebar from './components/sidebar/Sidebar'
+import BookPage from './components/bookpage/BookPage'
 
 const { Sider, Content } = Layout
 
@@ -18,6 +19,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path='/addbook' element={<SearchBook />} />
+            <Route path='/book/:booktitle' element={<BookPage />} />
             <Route path='/' element={<Mylibrary />} />
 
           </Routes>
