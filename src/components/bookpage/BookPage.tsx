@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Row, Col, Image, Typography, Layout, Rate, Space } from 'antd'
+import { Button, Row, Col, Image, Typography, Layout, Rate, Space, Input } from 'antd'
 import { motion } from 'framer-motion'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -17,7 +17,10 @@ interface bookData {
   imageurl?: string
   author: string
   industryIdentifiers: isbnData[],
-  dateRead: string
+  dateRead: string,
+  highlightnotes: string[],
+  review?: string,
+  notes: string[]
 }
 
 interface isbnData {
@@ -26,10 +29,15 @@ interface isbnData {
 
 const { Title, Text } = Typography
 const { Sider, Content } = Layout
+const { TextArea } = Input;
 
 const BookPage: React.FC = () => {
-  const [Saved, SetSaved] = useState<Boolean>(false)
+  // Load the data that can be modified into state values
   const [BookData, SetBookData] = useState<bookData | undefined>(undefined)
+  const [Rating, SetRating] = useState<number | undefined>(undefined)
+  const [HighlightedNotes, SetHighlightedNotes] = useState<string[] | undefined>(undefined)
+  const [Review, SetReview] = useState<String | undefined>(undefined)
+  const [Notes, SetNotes] = useState<string[] | undefined>(undefined)
 
   const { booktitle } = useParams()
   const  navigate = useNavigate();
@@ -39,13 +47,33 @@ const BookPage: React.FC = () => {
       response.json().then((json) => {
         if (json[0]) {
           SetBookData(json[0])
+          SetRating(json[0].rating)
+          SetHighlightedNotes(json[0].highlightnotes)
+          SetReview(json[0].review)
+          SetNotes(json[0].notes)
         } else alert('No Books Found With The Current ISBN')
       })
     })
-  }, [])
+  }, [booktitle])
 
   const handleBackClick = () => {
     navigate('/')
+  }
+
+  const handleReviewType = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    SetReview(event.target.textContent as string)
+  }
+  const onNoteAdd = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const element = event.target as HTMLTextAreaElement
+    if (Notes) {
+    let copyArr: string[] = [...Notes]
+    copyArr.push(element.textContent as string)
+    SetNotes(copyArr)
+  }
+  }
+
+
+  const handleSaveClick = () => {
   }
 
   return (
@@ -99,11 +127,16 @@ const BookPage: React.FC = () => {
             </Col>
             <Col span={12} style={{border: '1px solid black', padding: '5px', borderRadius: '5px'}}>
             <Space direction="vertical">
-                <Text>These are the notes highlighted from the book</Text>
-                <Text>These are the notes highlighted from the book</Text>
-                <Text>These are the notes highlighted from the book</Text>
-                <Text>These are the notes highlighted from the book</Text>
-                <Text>These are the notes highlighted from the book</Text>
+            {(BookData.highlightnotes.length !== 0) ? 
+              <>
+                <Text>This is a note written for the book</Text>
+                <Text>This is a note written for the book</Text>
+                <Text>This is a note written for the book</Text>
+                <Text>This is a note written for the book</Text>
+                <Text>This is a note written for the book</Text>
+                </>
+               : <Text>No notes found. Upload notes to add them</Text>
+               }
                 </Space>
               </Col>
               <Col span={12}>
@@ -113,12 +146,17 @@ const BookPage: React.FC = () => {
           <Row justify="center" style={layoutStyle} gutter={32}>
             <Col span={24} >
             <Space direction="vertical">
-              <Title>Review</Title>
+              <Title>My Review</Title>
+              {BookData.review ? 
+              <>
                 <Text>This is the review written for the book</Text>
                 <Text>This is the review written for the book</Text>
                 <Text>This is the review written for the book</Text>
                 <Text>This is the review written for the book</Text>
                 <Text>This is the review written for the book</Text>
+                </>
+               : <TextArea autoSize={{ minRows: 3, maxRows: 8 }} style={{width: '700px' }} onChange={handleReviewType} placeholder="Add a review..."/>
+               }
                 </Space>
               </Col>
           </Row>
@@ -126,13 +164,19 @@ const BookPage: React.FC = () => {
             <Col span={24}>
             <Space direction="vertical">
             <Title>Notes</Title>
-                <Text>These are written Notes added</Text>
-                <Text>These are written Notes added</Text>
-                <Text>These are written Notes added</Text>
-                <Text>These are written Notes added</Text>
-                <Text>These are written Notes added</Text>
+            {Notes && Notes.length !== 0 && 
+              <>
+              {Notes.map(note => {return(
+                <Text>{note}</Text>
+              )}
+              )}
+              </>
+            }
+
+               <TextArea autoSize={{ minRows: 1, maxRows: 8 }} style={{width: '700px' }} onPressEnter={onNoteAdd} placeholder="Add a note..."/>
                 </Space>
               </Col>
+
               <Row justify="center" style={{marginTop: '25px'}} gutter={64}>
               <Col span={12}>
                 <Button>Save</Button>
