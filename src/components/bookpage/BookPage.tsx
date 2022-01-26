@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
+import { Button, Row, Col, Image, Typography, Layout, Rate, Space } from 'antd'
 import { motion } from 'framer-motion'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 const textStyle = { marginBottom: '1vh' }
 const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '1vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
@@ -16,7 +16,8 @@ interface bookData {
   description: string
   imageurl?: string
   author: string
-  industryIdentifiers: isbnData[]
+  industryIdentifiers: isbnData[],
+  dateRead: string
 }
 
 interface isbnData {
@@ -29,7 +30,9 @@ const { Sider, Content } = Layout
 const BookPage: React.FC = () => {
   const [Saved, SetSaved] = useState<Boolean>(false)
   const [BookData, SetBookData] = useState<bookData | undefined>(undefined)
+
   const { booktitle } = useParams()
+  const  navigate = useNavigate();
 
   useEffect(() => {
     fetch(`http://localhost:4000/books/${booktitle}`).then((response) => {
@@ -41,13 +44,18 @@ const BookPage: React.FC = () => {
     })
   }, [])
 
+  const handleBackClick = () => {
+    navigate('/')
+  }
+
   return (
     <motion.div initial="hidden" animate="show" variants={listItem}>
       {BookData && (
+        <>          <Space direction="vertical">
         <Layout style={layoutStyle}>
           {BookData.imageurl && (
             <Sider style={{ backgroundColor: 'white', padding: '10px' }}>
-              <Image height="150px" src={BookData.imageurl} preview={false} />
+              <Image height="15vh" src={BookData.imageurl} preview={false} />
             </Sider>
           )}
           <Content>
@@ -66,6 +74,12 @@ const BookPage: React.FC = () => {
                 <Text italic>{BookData.description}</Text>
               </Col>
             </Row>
+            <Row justify="center" style={textStyle} gutter={12}>
+              <Col span={24}>
+                <Text italic>Book Read: {BookData.dateRead.split('T')[0]}</Text>
+              </Col>
+            </Row>
+
             <Row justify="center">
               <Col span={24}>
                 <Text strong>Rate it: </Text>
@@ -76,27 +90,60 @@ const BookPage: React.FC = () => {
                 <Rate allowHalf defaultValue={2.5} />
               </Col>
             </Row>
-            <Row justify="center" style={textStyle} gutter={32}>
-              {!Saved ? (
-                <>
-                  <Col span={12}>
-                    <Button type="primary">Add a Note</Button>
-                  </Col>
-                  <Col span={12}>
-                    <Button>View Notes</Button>
-                  </Col>
-                </>
-              ) : (
-                <Col span={24}>
-                  <Button>Add a Review</Button>
-                </Col>
-              )}
-            </Row>
-            <Col span={24}>
-              <Button size="large">Open</Button>
+            </Content>
+          </Layout>
+
+            <Row justify="center" style={layoutStyle} gutter={32}>
+            <Col span={24} >
+            <Title>Highlighted Notes</Title>
             </Col>
-          </Content>
-        </Layout>
+            <Col span={12} style={{border: '1px solid black', padding: '5px', borderRadius: '5px'}}>
+            <Space direction="vertical">
+                <Text>These are the notes highlighted from the book</Text>
+                <Text>These are the notes highlighted from the book</Text>
+                <Text>These are the notes highlighted from the book</Text>
+                <Text>These are the notes highlighted from the book</Text>
+                <Text>These are the notes highlighted from the book</Text>
+                </Space>
+              </Col>
+              <Col span={12}>
+                <Button>Upload Highlighted Notes</Button>
+              </Col>
+          </Row>
+          <Row justify="center" style={layoutStyle} gutter={32}>
+            <Col span={24} >
+            <Space direction="vertical">
+              <Title>Review</Title>
+                <Text>This is the review written for the book</Text>
+                <Text>This is the review written for the book</Text>
+                <Text>This is the review written for the book</Text>
+                <Text>This is the review written for the book</Text>
+                <Text>This is the review written for the book</Text>
+                </Space>
+              </Col>
+          </Row>
+          <Row justify="center" style={layoutStyle} gutter={32}>
+            <Col span={24}>
+            <Space direction="vertical">
+            <Title>Notes</Title>
+                <Text>These are written Notes added</Text>
+                <Text>These are written Notes added</Text>
+                <Text>These are written Notes added</Text>
+                <Text>These are written Notes added</Text>
+                <Text>These are written Notes added</Text>
+                </Space>
+              </Col>
+              <Row justify="center" style={{marginTop: '25px'}} gutter={64}>
+              <Col span={12}>
+                <Button>Save</Button>
+              </Col>
+              <Col span={12}>
+                <Button onClick={handleBackClick}>Go Back</Button>
+              </Col>
+            </Row>
+          </Row>
+          </Space>
+          </>
       )}
     </motion.div>
   )

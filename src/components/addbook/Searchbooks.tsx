@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Input, Button } from 'antd'
+import { Input, Button, message } from 'antd'
 import BookDataCard from './../bookdatacard/BookDataCard'
 
 interface bookData {
@@ -48,7 +48,7 @@ const SearchBook: React.FC = () => {
           read: true,
           wishlist: false,
         }),
-      }).then(() => alert('Book Saved'))
+      }).then(() => message.info('Book Saved'))
     }
   }
 
