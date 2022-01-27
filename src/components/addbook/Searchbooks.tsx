@@ -31,9 +31,9 @@ const SearchBook: React.FC = () => {
     SetISBN(event.clipboardData.getData('text'))
   }
 
-  const handleAddLibrary = () => {
+  const handleAddLibrary = async () => {
     if (BookData) {
-      fetch('http://localhost:4000/books/addbook', {
+      await fetch('http://localhost:4000/books/addbook', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -50,8 +50,22 @@ const SearchBook: React.FC = () => {
           read: true,
           wishlist: false,
         }),
-      }).then(() => message.info('Book Saved'))
-    }
+      })
+      BookData.categories.forEach(category => {
+        fetch('http://localhost:4000/categories/', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            category: category,
+            booktitle: BookData.title,
+          }),
+        }).then(() => message.info('Book added to database'))
+      })
+  }
+    
   }
 
   const fetchData = () => {

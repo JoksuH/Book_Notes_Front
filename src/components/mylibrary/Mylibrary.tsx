@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Pagination, Row, Input, Empty } from 'antd'
+import { Pagination, Row, Col,  Input, Empty, Select } from 'antd'
 import BookDataCard from './../bookdatacard/BookDataCard'
 
 interface bookData {
@@ -19,6 +19,8 @@ interface isbnData {
 interface imagelinks {
   thumbnail: string
 }
+
+const { Option } = Select;
 
 const inputRowStyle = { width: '50vw', height: '10vh', margin: 'auto', marginTop: '1vh', paddingTop: '20px' }
 
@@ -63,10 +65,22 @@ const Mylibrary: React.FC = () => {
     }
   }
 
+  const handleCategorySelect = () => {
+
+  }
+
   return (
     <div style={inputRowStyle}>
       <Row>
+        <Col span={16}>
         <Input placeholder="Filter Books" onChange={handleFilterTyping}></Input>
+        </Col>
+        <Col span={8}>
+        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleCategorySelect}>
+      <Option value="jack">Jack</Option>
+      <Option value="lucy">Lucy</Option>
+      </Select>
+      </Col>
       </Row>
       {CurrentPageBookData ? (
         <>
