@@ -6,6 +6,7 @@ interface bookData {
   _id: string
   title: string
   description: string
+  categories: string[]
   imageLinks: imagelinks
   author: string
   industryIdentifiers: isbnData[]

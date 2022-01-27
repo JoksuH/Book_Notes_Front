@@ -5,6 +5,7 @@ import BookDataCard from './../bookdatacard/BookDataCard'
 interface bookData {
   title: String,
   description: String,
+  categories: string[],
   imageLinks: imagelinks,
   authors: String[],
   industryIdentifiers: isbnData[]
@@ -44,6 +45,7 @@ const SearchBook: React.FC = () => {
           //Gets the ISBN-13 number
           isbn: BookData.industryIdentifiers[0]['identifier'],
           description: BookData.description,
+          categories: BookData.categories,
           imageurl: BookData.imageLinks.thumbnail,
           read: true,
           wishlist: false,
@@ -58,7 +60,6 @@ const SearchBook: React.FC = () => {
         response.json().then((json) => {
           if (json['items']) {
             let bookData = json['items'][0]['volumeInfo']
-            console.log(bookData)
             SetBookData(bookData)
           } else alert('No Books Found With The Current ISBN')
         })

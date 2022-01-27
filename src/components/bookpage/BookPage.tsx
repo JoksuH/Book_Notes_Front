@@ -14,6 +14,7 @@ interface bookData {
   _id: string
   title: string
   description: string
+  categories: string[]
   imageurl?: string
   author: string
   industryIdentifiers: isbnData[],
@@ -102,6 +103,13 @@ const BookPage: React.FC = () => {
                 <Text italic>{BookData.description}</Text>
               </Col>
             </Row>
+            <Row justify="center" style={textStyle} gutter={12}>
+              <Col span={24}>
+                <Text>Categories:  {BookData.categories.map((category: string, index: number) =>{
+                   return((index < BookData.categories.length-1) ? category + ', ' : category) 
+                   })}</Text>
+              </Col>
+              </Row>
             <Row justify="center" style={textStyle} gutter={12}>
               <Col span={24}>
                 <Text italic>Book Read: {BookData.dateRead.split('T')[0]}</Text>

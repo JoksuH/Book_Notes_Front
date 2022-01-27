@@ -22,6 +22,7 @@ interface data {
 interface bookData {
   title: String
   description: String
+  categories: string[]
   imageLinks?: imagelinks | undefined,
   imageurl?: string,
   authors?: String[],
@@ -95,6 +96,13 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
             <Row justify="center" style={textStyle} gutter={12}>
               <Col span={24}>
                 <Text italic>{BookData.description}</Text>
+              </Col>
+            </Row>
+            <Row justify="center" style={textStyle} gutter={12}>
+              <Col span={24}>
+                <Text>Categories:  {BookData.categories.map((category: string, index: number) =>{
+                   return((index < BookData.categories.length-1) ? category + ', ' : category) 
+                   })}</Text>
               </Col>
             </Row>
             {!small ? (
