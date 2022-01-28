@@ -47,6 +47,7 @@ const BookPage: React.FC = () => {
   const [Review, SetReview] = useState<String | undefined>(undefined)
   const [Notes, SetNotes] = useState<string[] | undefined>(undefined)
   const [AllCategories, SetAllCategories] = useState<categoryData[] | undefined>(undefined)
+  const [OriginalCategories, SetOriginalCategories] = useState<string[]>([])
   const [SelectedCategories, SetSelectedCategories] = useState<string[]>([])
   const [ModalVisible, SetModalVisible] = useState<boolean>(false)
 
@@ -60,6 +61,7 @@ const BookPage: React.FC = () => {
           SetBookData(json[0])
           SetRating(json[0].rating)
           SetSelectedCategories(json[0].categories)
+          SetOriginalCategories(json[0].categories)
           SetHighlightedNotes(json[0].highlightnotes)
           SetReview(json[0].review)
           SetNotes(json[0].notes)
@@ -92,9 +94,11 @@ const BookPage: React.FC = () => {
         },
         body: JSON.stringify({
           categories: SelectedCategories,
+          originalcategories: OriginalCategories,
           booktitle: BookData.title
         }),
-      }).then(() => {fetch(`http://localhost:4000/books/catories/${BookData._id}/`, {
+      }).then(() => {
+      fetch(`http://localhost:4000/books/categories/${BookData._id}/`, {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
