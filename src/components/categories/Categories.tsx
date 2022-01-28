@@ -45,7 +45,7 @@ const Categories: React.FC = () => {
           SetCategories(json)
           SetResoultsAmount(json.length)
           SetCurrentCategoryData(json.slice(0, 5))
-        } else alert('No Books Found With The Current ISBN')
+        } else message.warn('No Categories Found!')
       })
     })
   }, [])
