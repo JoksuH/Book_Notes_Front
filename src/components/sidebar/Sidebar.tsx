@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from "react-router-dom";
 import { Menu } from 'antd';
-import { BookOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { BookOutlined, PlusOutlined, EditOutlined, UnorderedListOutlined } from '@ant-design/icons';
 
 
 function Sidebar() {
@@ -15,6 +15,10 @@ function Sidebar() {
       case ('addbook'):
         navigate('/addbook')
         break
+      case ('categories'):
+        navigate('/categories')
+        break
+  
     }
 
   }
@@ -27,11 +31,13 @@ function Sidebar() {
             <Menu.Item key="addbook" icon={<PlusOutlined />}>
               Add a Book
             </Menu.Item>
+            <Menu.Item key="categories" icon={<UnorderedListOutlined />}>
+              Categories
+            </Menu.Item>
             <Menu.Item key="3" icon={<EditOutlined />}>
                 Notes
             </Menu.Item>
           </Menu>   
   )
 }
-
 export default Sidebar

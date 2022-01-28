@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Row, Col, Image, Typography, Layout, Rate } from 'antd'
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const textStyle = { marginBottom: '1vh' }
 const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '1vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
@@ -10,12 +10,11 @@ const listItem = {
   show: (index: number) => ({ opacity: 1, x: 0, transition: { duration: 0.3, delay: index * 0.1 } }),
 }
 
-
 interface data {
   BookData: bookData
   onBookAdd?: () => void
   small?: Boolean
-  rateable?: Boolean,
+  rateable?: Boolean
   index?: number
 }
 
@@ -23,10 +22,10 @@ interface bookData {
   title: String
   description: String
   categories: string[]
-  imageLinks?: imagelinks | undefined,
-  imageurl?: string,
-  authors?: String[],
-  author?: String,
+  imageLinks?: imagelinks | undefined
+  imageurl?: string
+  authors?: String[]
+  author?: String
   industryIdentifiers: isbnData[]
 }
 
@@ -42,14 +41,18 @@ const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
 const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, index }) => {
-  const  navigate = useNavigate();
+  const navigate = useNavigate()
 
   const [Saved, SetSaved] = useState<Boolean>(false)
 
+  useEffect(() => {
+    //Resets state when book is changed
+    SetSaved(false)
+  }, [BookData])
+
   const onAddLibrary = () => {
     SetSaved(true)
-    if (onBookAdd)
-    onBookAdd()
+    if (onBookAdd) onBookAdd()
   }
 
   const onAddWishlist = () => {}
@@ -59,13 +62,12 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
   }
 
   const handleBookPageOpen = () => {
-    const title:String = BookData.title
+    const title: String = BookData.title
     navigate(`/book/${title}`)
-
   }
   return (
-    <motion.div    initial="hidden" animate="show" variants={listItem} custom={index}>
-          {BookData && (
+    <motion.div initial="hidden" animate="show" variants={listItem} custom={index}>
+      {BookData && (
         <Layout style={layoutStyle}>
           {BookData.imageLinks && (
             <Sider style={{ backgroundColor: 'white', padding: '10px' }}>
@@ -82,16 +84,16 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
               <Col span={12}>
                 Title: <Title>{BookData.title}</Title>
               </Col>
-              {BookData.authors && 
-              <Col span={12}>
-                Author:<Title>{BookData.authors[0]}</Title>
-              </Col>
-              }
-               {BookData.author && 
-              <Col span={12}>
-                Author:<Title>{BookData.author}</Title>
-              </Col>
-              }
+              {BookData.authors && (
+                <Col span={12}>
+                  Author:<Title>{BookData.authors[0]}</Title>
+                </Col>
+              )}
+              {BookData.author && (
+                <Col span={12}>
+                  Author:<Title>{BookData.author}</Title>
+                </Col>
+              )}
             </Row>
             <Row justify="center" style={textStyle} gutter={12}>
               <Col span={24}>
@@ -100,9 +102,12 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
             </Row>
             <Row justify="center" style={textStyle} gutter={12}>
               <Col span={24}>
-                <Text>Categories:  {BookData.categories.map((category: string, index: number) =>{
-                   return((index < BookData.categories.length-1) ? category + ', ' : category) 
-                   })}</Text>
+                <Text>
+                  Categories:{' '}
+                  {BookData.categories.map((category: string, index: number) => {
+                    return index < BookData.categories.length - 1 ? category + ', ' : category
+                  })}
+                </Text>
               </Col>
             </Row>
             {!small ? (
@@ -140,16 +145,18 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
                   )}
                 </Row>
               </>
-            ): 
+            ) : (
               <Col span={24}>
-              <Button size="large" onClick={handleBookPageOpen}>Open</Button>
+                <Button size="large" onClick={handleBookPageOpen}>
+                  Open
+                </Button>
               </Col>
-            }
+            )}
           </Content>
         </Layout>
       )}
-    </motion.div> 
- )
+    </motion.div>
+  )
 }
 
 BookDataCard.defaultProps = {

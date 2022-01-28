@@ -6,6 +6,7 @@ import SearchBook from './components/addbook/Searchbooks'
 import Mylibrary from './components/mylibrary/Mylibrary'
 import Sidebar from './components/sidebar/Sidebar'
 import BookPage from './components/bookpage/BookPage'
+import Categories from './components/categories/Categories'
 
 const { Sider, Content } = Layout
 
@@ -19,6 +20,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path='/addbook' element={<SearchBook />} />
+            <Route path='/categories' element={<Categories />} />
             <Route path='/book/:booktitle' element={<BookPage />} />
             <Route path='/' element={<Mylibrary />} />
 
