@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Pagination, Row, Col, Input, Empty, Button } from 'antd'
+import { Pagination, Row, Col, Input, Empty, Button, Modal, message } from 'antd'
 import BookDataCard from './../bookdatacard/BookDataCard'
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons'
 
 interface categoryData {
   _id: string
@@ -35,6 +35,8 @@ const Categories: React.FC = () => {
   const [CurrentCategoryData, SetCurrentCategoryData] = useState<categoryData[] | undefined>(undefined)
   const [Filter, SetFilter] = useState<string | undefined>(undefined)
   const [ResultsAmount, SetResoultsAmount] = useState<number | undefined>(undefined)
+  const [ModalVisible, SetModalVisible] = useState<boolean>(false)
+  const [TypedCategoryName, SetTypedCategoryName] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     fetch(`http://localhost:4000/categories/`).then((response) => {
@@ -47,6 +49,36 @@ const Categories: React.FC = () => {
       })
     })
   }, [])
+
+  const handleaddCategoryClick = () => {
+    SetModalVisible(true)
+  }
+
+  const handleCategorySave = () => {
+    if (TypedCategoryName) {
+      fetch('http://localhost:4000/categories/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category: TypedCategoryName,
+        }),
+      }).then(() => message.info('Category added to database'))
+    }
+    SetTypedCategoryName(undefined)
+    SetModalVisible(false)
+  }
+
+  const handleModalCancel = () => {
+    SetModalVisible(false)
+    SetTypedCategoryName(undefined)
+  }
+
+  const handleCategoryNameTyping = (event: React.ChangeEvent<HTMLInputElement>) => {
+    SetTypedCategoryName(event.target.value)
+  }
 
   const handlePageChange = (page: number) => {
     if (Categories) {
@@ -71,8 +103,6 @@ const Categories: React.FC = () => {
     }
   }
 
-  const handleCategorySelect = () => {}
-
   return (
     <div style={inputRowStyle}>
       <Row>
@@ -80,9 +110,14 @@ const Categories: React.FC = () => {
           <Input placeholder="Filter Books" onChange={handleFilterTyping}></Input>
         </Col>
         <Col span={8}>
-          <Button icon={<PlusOutlined />}>Add a Category</Button>
+          <Button icon={<PlusOutlined />} onClick={handleaddCategoryClick}>
+            Add a Category
+          </Button>
         </Col>
       </Row>
+      <Modal title="Create a category" visible={ModalVisible} onOk={handleCategorySave} onCancel={handleModalCancel}>
+        <Input size="large" placeholder="Name..." onChange={handleCategoryNameTyping} />
+      </Modal>
       {CurrentCategoryData ? (
         <>
           {CurrentCategoryData.map((category: categoryData, index: number) => {
