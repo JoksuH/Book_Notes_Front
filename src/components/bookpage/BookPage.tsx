@@ -228,7 +228,7 @@ const BookPage: React.FC = () => {
                 </Row>
                 <Row justify="center" style={textStyle} gutter={12}>
                   <Col span={24}>
-                    <Text italic>Book Read: {BookData.dateRead.split('T')[0]}</Text>
+                    <Title level={3}>Book Read: {BookData.dateRead.split('T')[0]}</Title>
                   </Col>
                 </Row>
 

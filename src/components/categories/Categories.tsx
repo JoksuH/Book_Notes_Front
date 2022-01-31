@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Pagination, Row, Col, Input, Empty, Button, Modal, message } from 'antd'
-import BookDataCard from './../bookdatacard/BookDataCard'
+import { Pagination, Row, Col, Input, Empty, Button, Modal, message, Collapse, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
 
 interface categoryData {
   _id: string
   name: string
-  books: bookData
+  books: string[]
 }
 
 interface bookData {
@@ -28,6 +28,11 @@ interface imagelinks {
   thumbnail: string
 }
 
+const { Panel } = Collapse
+const { Title, Text } = Typography
+
+
+
 const inputRowStyle = { width: '50vw', height: '10vh', margin: 'auto', marginTop: '1vh', paddingTop: '20px' }
 
 const Categories: React.FC = () => {
@@ -37,6 +42,9 @@ const Categories: React.FC = () => {
   const [ResultsAmount, SetResoultsAmount] = useState<number | undefined>(undefined)
   const [ModalVisible, SetModalVisible] = useState<boolean>(false)
   const [TypedCategoryName, SetTypedCategoryName] = useState<string | undefined>(undefined)
+
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     fetch(`http://localhost:4000/categories/`).then((response) => {
@@ -103,11 +111,16 @@ const Categories: React.FC = () => {
     }
   }
 
+  const handleBookSelectClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target: HTMLElement = event.target as HTMLElement
+    target?.parentElement?.id !== '' && navigate(`/book/${target?.parentElement?.id}`)
+  }
+
   return (
     <div style={inputRowStyle}>
       <Row>
         <Col span={16}>
-          <Input placeholder="Filter Books" onChange={handleFilterTyping}></Input>
+          <Input placeholder="Filter Categories" onChange={handleFilterTyping}></Input>
         </Col>
         <Col span={8}>
           <Button icon={<PlusOutlined />} onClick={handleaddCategoryClick}>
@@ -120,15 +133,27 @@ const Categories: React.FC = () => {
       </Modal>
       {CurrentCategoryData ? (
         <>
+        <Collapse accordion defaultActiveKey={['1']} style={{marginTop: '5vh'}}>
           {CurrentCategoryData.map((category: categoryData, index: number) => {
             return (
-              <div key={category._id}>
-                <p>{category.name}</p>
-              </div>
-            )
-          })}
+              <Panel header={category.name} key={category.name}>
+              {category.books.map(book => {
+                  return(
+                    <Row>
+                      <Col span={16}><Title level={4}>{book}</Title></Col>
+                      <Col span={8}><Button onClick={handleBookSelectClick} id={book}>Open</Button></Col>
+
+                      </Row>
+                  )
+              })
+              }
+          </Panel>  )}
+                )
+          }
+
+        </Collapse>
           <Pagination defaultCurrent={1} defaultPageSize={5} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
-        </>
+          </>
       ) : (
         <Empty style={{ marginTop: '15vh' }} description={<span>No Books Found!</span>} />
       )}
