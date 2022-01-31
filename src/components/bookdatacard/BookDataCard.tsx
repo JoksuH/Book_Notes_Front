@@ -70,7 +70,7 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
       {BookData && (
         <Layout style={layoutStyle}>
           {BookData.imageLinks && (
-            <Sider style={{ backgroundColor: 'white', padding: '10px' }}>
+            <Sider style={{ backgroundColor: 'white', padding: '10px', height: '170vh' }}>
               <Image height="100%" width="100%" src={BookData.imageLinks.thumbnail} preview={false} />
             </Sider>
           )}
