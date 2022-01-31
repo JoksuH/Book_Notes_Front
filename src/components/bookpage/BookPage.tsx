@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Row, Col, Image, Typography, Layout, Rate, Space, Input, Modal, message, Checkbox } from 'antd'
+import { Button, Row, Col, Image, Typography, Layout, Rate, Space, Input, Modal, message, Checkbox, DatePicker } from 'antd'
 import { motion } from 'framer-motion'
 import { useParams, useNavigate } from 'react-router-dom'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, CalendarOutlined } from '@ant-design/icons'
+import moment, { Moment } from "moment"
 
-const textStyle = { marginBottom: '1vh' }
+const textStyle = { marginBottom: '1vh', marginTop: '2vh' }
 const layoutStyle = { width: '50vw', margin: 'auto', marginTop: '1vh', border: '1px solid black', borderRadius: '10px', padding: '20px', backgroundColor: 'white' }
 const listItem = {
   hidden: { opacity: 0, x: -50 },
@@ -43,13 +44,15 @@ const BookPage: React.FC = () => {
   // Load the data that can be modified into state values
   const [BookData, SetBookData] = useState<bookData | undefined>(undefined)
   const [Rating, SetRating] = useState<number | undefined>(undefined)
+  const [ReadDate, SetReadDate] = useState<Date | undefined>(undefined)
   const [HighlightedNotes, SetHighlightedNotes] = useState<string[] | undefined>(undefined)
   const [Review, SetReview] = useState<String | undefined>(undefined)
   const [Notes, SetNotes] = useState<string[] | undefined>(undefined)
   const [AllCategories, SetAllCategories] = useState<categoryData[] | undefined>(undefined)
   const [OriginalCategories, SetOriginalCategories] = useState<string[]>([])
   const [SelectedCategories, SetSelectedCategories] = useState<string[]>([])
-  const [ModalVisible, SetModalVisible] = useState<boolean>(false)
+  const [CategoryModalVisible, SetCategoryModalVisible] = useState<boolean>(false)
+  const [DateSelectVisible, SetDateSelectVisible] = useState<boolean>(false)
 
   const { booktitle } = useParams()
   const navigate = useNavigate()
@@ -65,6 +68,7 @@ const BookPage: React.FC = () => {
           SetHighlightedNotes(json[0].highlightnotes)
           SetReview(json[0].review)
           SetNotes(json[0].notes)
+          SetReadDate(json[0].dateRead)
         } else alert('No Books Found With The Current ISBN')
       })
     })
@@ -80,7 +84,7 @@ const BookPage: React.FC = () => {
   
 
   const handleModalCancel = () => {
-    SetModalVisible(false)
+    SetCategoryModalVisible(false)
     //SetTypedCategoryName(undefined)
   }
 
@@ -113,7 +117,7 @@ const BookPage: React.FC = () => {
         }),
       }).then(() => message.info('Categories added to database'))})
     
-    SetModalVisible(false)
+    SetCategoryModalVisible(false)
     
   }
 }
@@ -128,12 +132,12 @@ const BookPage: React.FC = () => {
       response.json().then((json) => {
         if (json) {
           SetAllCategories(json)
-          SetModalVisible(true)
+          SetCategoryModalVisible(true)
         } else message.warn('No Categories Found!')
       })
     })
   }
-  else SetModalVisible(true)
+  else SetCategoryModalVisible(true)
   }
 
   const handleReviewType = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -147,6 +151,16 @@ const BookPage: React.FC = () => {
       SetNotes(copyArr)
     }
   }
+
+  const handleDateChange = () => {
+    console.log(ReadDate)
+    SetDateSelectVisible(!DateSelectVisible)
+  }
+
+  const handleDateSelection = (date: Moment | null) => {
+    SetReadDate(date?.toDate())
+  }
+
 
   const handleSaveClick = () => {
     if (BookData) {
@@ -162,7 +176,8 @@ const BookPage: React.FC = () => {
         rating: Rating,
         highlightednotes: HighlightedNotes,
         review: Review,
-        notes: Notes
+        notes: Notes,
+        dateRead: ReadDate
       }),
     }).then(() => message.info('Changes saved to database'))
   }
@@ -199,19 +214,18 @@ const BookPage: React.FC = () => {
                 </Row>
                 <Row justify="center" style={textStyle} gutter={12}>
                   <Col span={16}>
-                    <Text>
+                    <Title level={4}>
                       Categories:{' '}
                       {SelectedCategories.map((category: string, index: number) => {
                         return index < SelectedCategories.length - 1 ? category + ', ' : category
                       })}
-                    </Text>
+                    </Title>
                   </Col>
                   <Col span={8}>
-                    <Button icon={<PlusOutlined />} onClick={handleaddCategoryClick}>
-                      Add a Category
+                    <Button icon={<PlusOutlined />} onClick={handleaddCategoryClick}>Add
                     </Button>
                   </Col>
-                  <Modal title="Select More Categories" visible={ModalVisible} onOk={handleCategorySave} onCancel={handleModalCancel}>
+                  <Modal title="Select More Categories" visible={CategoryModalVisible} onOk={handleCategorySave} onCancel={handleModalCancel}>
                     <Input size="large" placeholder="Name..." onChange={handleCategoryNameTyping} />
                     <Checkbox.Group style={{ width: '100%', padding: '25px' }} onChange={handleCheckboxCheck} defaultValue={SelectedCategories}>
                       <Row>
@@ -226,9 +240,14 @@ const BookPage: React.FC = () => {
                     </Checkbox.Group>
                   </Modal>
                 </Row>
-                <Row justify="center" style={textStyle} gutter={12}>
-                  <Col span={24}>
-                    <Title level={3}>Book Read: {BookData.dateRead.split('T')[0]}</Title>
+                <Row justify="start" style={textStyle} gutter={12}>
+                  <Col span={16}>
+                    {!DateSelectVisible ?                     <Title level={4}>Book Read: {BookData.dateRead.split('T')[0]}</Title>
+                    :     <DatePicker onChange={handleDateSelection}/>
+                  }
+                  </Col>
+                  <Col span={8}>
+                    <Button icon={<CalendarOutlined />} onClick={handleDateChange}>{!DateSelectVisible ? 'Change' : 'Save'}</Button>
                   </Col>
                 </Row>
 

@@ -14,6 +14,7 @@
 # misc
 .DS_Store
 .env
+*.txt
 .env.local
 .prettierrc
 .env.development.local

@@ -133,10 +133,10 @@ const Categories: React.FC = () => {
       </Modal>
       {CurrentCategoryData ? (
         <>
-        <Collapse accordion defaultActiveKey={['1']} style={{marginTop: '5vh'}}>
+        <Collapse accordion style={{marginTop: '5vh'}}>
           {CurrentCategoryData.map((category: categoryData, index: number) => {
             return (
-              <Panel header={category.name} key={category.name}>
+              <Panel header={category.name} key={index}>
               {category.books.map(book => {
                   return(
                     <Row>
@@ -155,7 +155,7 @@ const Categories: React.FC = () => {
           <Pagination defaultCurrent={1} defaultPageSize={5} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
           </>
       ) : (
-        <Empty style={{ marginTop: '15vh' }} description={<span>No Books Found!</span>} />
+        <Empty style={{ marginTop: '15vh' }} description={<span>No Matching Categories Found!</span>} />
       )}
     </div>
   )
