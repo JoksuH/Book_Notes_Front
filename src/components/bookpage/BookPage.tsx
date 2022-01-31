@@ -74,6 +74,11 @@ const BookPage: React.FC = () => {
     navigate('/')
   }
 
+  const handleRatingChange = (value: number) => {
+      SetRating(value)
+    }
+  
+
   const handleModalCancel = () => {
     SetModalVisible(false)
     //SetTypedCategoryName(undefined)
@@ -83,8 +88,7 @@ const BookPage: React.FC = () => {
     //SetTypedCategoryName(event.target.value)
   }
 
-  const handleCategorySave = () => {
-    
+  const handleCategorySave = () => {    
     if (BookData) {
       fetch('http://localhost:4000/categories/', {
         method: 'PUT',
@@ -98,7 +102,7 @@ const BookPage: React.FC = () => {
           booktitle: BookData.title
         }),
       }).then(() => {
-      fetch(`http://localhost:4000/books/categories/${BookData._id}/`, {
+      fetch(`http://localhost:4000/books/${BookData._id}/`, {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -144,7 +148,25 @@ const BookPage: React.FC = () => {
     }
   }
 
-  const handleSaveClick = () => {}
+  const handleSaveClick = () => {
+    if (BookData) {
+    fetch(`http://localhost:4000/books/${BookData._id}/`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      //Send data that could be modified
+      body: JSON.stringify({
+        categories: SelectedCategories,
+        rating: Rating,
+        highlightednotes: HighlightedNotes,
+        review: Review,
+        notes: Notes
+      }),
+    }).then(() => message.info('Changes saved to database'))
+  }
+  }
   
 
   return (
@@ -217,7 +239,7 @@ const BookPage: React.FC = () => {
                 </Row>
                 <Row justify="center" style={textStyle} gutter={32}>
                   <Col span={24}>
-                    <Rate allowHalf defaultValue={2.5} />
+                    <Rate allowHalf value={Rating} onChange={handleRatingChange}/>
                   </Col>
                 </Row>
               </Content>
@@ -251,13 +273,7 @@ const BookPage: React.FC = () => {
                 <Space direction="vertical">
                   <Title>My Review</Title>
                   {BookData.review ? (
-                    <>
-                      <Text>This is the review written for the book</Text>
-                      <Text>This is the review written for the book</Text>
-                      <Text>This is the review written for the book</Text>
-                      <Text>This is the review written for the book</Text>
-                      <Text>This is the review written for the book</Text>
-                    </>
+                      <Text>{BookData.review}</Text>
                   ) : (
                     <TextArea autoSize={{ minRows: 3, maxRows: 8 }} style={{ width: '700px' }} onChange={handleReviewType} placeholder="Add a review..." />
                   )}
@@ -282,7 +298,7 @@ const BookPage: React.FC = () => {
 
               <Row justify="center" style={{ marginTop: '25px' }} gutter={64}>
                 <Col span={12}>
-                  <Button>Save</Button>
+                  <Button onClick={handleSaveClick}>Save</Button>
                 </Col>
                 <Col span={12}>
                   <Button onClick={handleBackClick}>Go Back</Button>
