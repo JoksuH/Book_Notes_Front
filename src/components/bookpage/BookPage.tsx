@@ -167,6 +167,7 @@ const BookPage: React.FC = () => {
     if (info && info.length > 2) {
     let authorInfo: string = info.split('(')[1].slice(0,-1)
     let bookTitleInfo: string = info.split(' ')[0]
+    console.log(bookTitleInfo)
     //Info check looks at whether the author and the first word in the title are the same
     if (BookData) return(authorInfo.toLowerCase() === BookData.author.toLowerCase() && bookTitleInfo.toLowerCase() === BookData.title.split(' ')[0].toLowerCase())
   }
@@ -305,7 +306,7 @@ const BookPage: React.FC = () => {
                   {BookData.highlightnotes.length !== 0 ? (
                     <> {BookData.highlightnotes.map(note => {
                       return (
-                      <Text>{note}</Text>
+                      <Text italic>{'> '} {note}</Text>
                       )
                     })}
                     </>
