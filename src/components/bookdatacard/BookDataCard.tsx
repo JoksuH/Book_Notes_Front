@@ -21,7 +21,7 @@ interface data {
 interface bookData {
   title: String
   description: String
-  categories: string[]
+  categories?: string[]
   imageLinks?: imagelinks | undefined
   imageurl?: string
   authors?: String[]
@@ -41,6 +41,7 @@ const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
 const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, index }) => {
+  console.log(BookData)
   const navigate = useNavigate()
 
   const [Saved, SetSaved] = useState<Boolean>(false)
@@ -104,8 +105,8 @@ const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, in
               <Col span={24}>
                 <Text>
                   Categories:{' '}
-                  {BookData.categories.map((category: string, index: number) => {
-                    return index < BookData.categories.length - 1 ? category + ', ' : category
+                  {BookData.categories && BookData.categories.map((category: string, index: number) => {
+                    return index < BookData!.categories!.length - 1 ? category + ', ' : category
                   })}
                 </Text>
               </Col>

@@ -45,14 +45,16 @@ const BookPage: React.FC = () => {
   const [BookData, SetBookData] = useState<bookData | undefined>(undefined)
   const [Rating, SetRating] = useState<number | undefined>(undefined)
   const [ReadDate, SetReadDate] = useState<Date | undefined>(undefined)
-  const [HighlightedNotes, SetHighlightedNotes] = useState<string[] | undefined>(undefined)
+  const [HighlightedNotes, SetHighlightedNotes] = useState<string[]>([])
   const [Review, SetReview] = useState<String | undefined>(undefined)
   const [Notes, SetNotes] = useState<string[] | undefined>(undefined)
   const [AllCategories, SetAllCategories] = useState<categoryData[] | undefined>(undefined)
   const [OriginalCategories, SetOriginalCategories] = useState<string[]>([])
   const [SelectedCategories, SetSelectedCategories] = useState<string[]>([])
   const [CategoryModalVisible, SetCategoryModalVisible] = useState<boolean>(false)
+  const [NoteAddModalVisible, SetNoteAddModalVisible] = useState<boolean>(false)
   const [DateSelectVisible, SetDateSelectVisible] = useState<boolean>(false)
+
 
   const { booktitle } = useParams()
   const navigate = useNavigate()
@@ -140,6 +142,37 @@ const BookPage: React.FC = () => {
   else SetCategoryModalVisible(true)
   }
 
+  const handleHighNotesTyping = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log(event.target.value)
+  }
+
+  const handleHighNotesPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    let tobeSavedNotes: string[] = [...HighlightedNotes]
+    // '==========' is the formatting used by kindle note import to seperate comments
+    let splitNotes:string[] = event.clipboardData.getData('text').split('==========')
+    splitNotes.forEach(note => {
+        let noteValues = note.split('\n')
+        let bookInfo: string
+        //If the first line is empty, commonly the other lines other than the first pasted line, then get the book info from the second line
+        noteValues[0] === '' ? bookInfo = noteValues[1] : bookInfo = noteValues[0] 
+        //In this split the second to last part is the note
+        checkBookInfoMatch(bookInfo) && tobeSavedNotes.push(noteValues[noteValues.length-2])
+    })
+
+    SetHighlightedNotes(tobeSavedNotes)
+  }
+
+  const checkBookInfoMatch = (info: string): boolean => {
+
+    if (info && info.length > 2) {
+    let authorInfo: string = info.split('(')[1].slice(0,-1)
+    let bookTitleInfo: string = info.split(' ')[0]
+    //Info check looks at whether the author and the first word in the title are the same
+    if (BookData) return(authorInfo.toLowerCase() === BookData.author.toLowerCase() && bookTitleInfo.toLowerCase() === BookData.title.split(' ')[0].toLowerCase())
+  }
+    return false
+  }
+
   const handleReviewType = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     SetReview(event.target.textContent as string)
   }
@@ -153,7 +186,6 @@ const BookPage: React.FC = () => {
   }
 
   const handleDateChange = () => {
-    console.log(ReadDate)
     SetDateSelectVisible(!DateSelectVisible)
   }
 
@@ -268,25 +300,28 @@ const BookPage: React.FC = () => {
               <Col span={24}>
                 <Title>Highlighted Notes</Title>
               </Col>
-              <Col span={12} style={{ border: '1px solid black', padding: '5px', borderRadius: '5px' }}>
+              <Col span={BookData.highlightnotes.length !== 0 ? 24 : 12} style={{ border: '1px solid black', padding: '5px', borderRadius: '5px' }}>
                 <Space direction="vertical">
                   {BookData.highlightnotes.length !== 0 ? (
-                    <>
-                      <Text>This is a note written for the book</Text>
-                      <Text>This is a note written for the book</Text>
-                      <Text>This is a note written for the book</Text>
-                      <Text>This is a note written for the book</Text>
-                      <Text>This is a note written for the book</Text>
+                    <> {BookData.highlightnotes.map(note => {
+                      return (
+                      <Text>{note}</Text>
+                      )
+                    })}
                     </>
                   ) : (
                     <Text>No notes found. Upload notes to add them</Text>
                   )}
                 </Space>
               </Col>
-              <Col span={12}>
-                <Button>Upload Highlighted Notes</Button>
+              <Col span={BookData.highlightnotes.length !== 0 ? 12 : 24}>
+                <Button onClick={() => SetNoteAddModalVisible(true)}>Paste Highlighted Notes</Button>
               </Col>
             </Row>
+            <Modal title="Paste Highlighted Notes" visible={NoteAddModalVisible} onOk={() => SetNoteAddModalVisible(false)} onCancel={() => SetNoteAddModalVisible(false)} style={{height: '700px', width: '600px'}}>
+                    <TextArea  size="large" placeholder="Name..." autoSize={{ minRows: 3, maxRows: 5 }} onChange={handleHighNotesTyping} onPaste={handleHighNotesPaste} />
+                  </Modal>
+
             <Row justify="center" style={layoutStyle} gutter={32}>
               <Col span={24}>
                 <Space direction="vertical">

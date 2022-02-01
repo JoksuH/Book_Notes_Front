@@ -137,9 +137,9 @@ const Categories: React.FC = () => {
           {CurrentCategoryData.map((category: categoryData, index: number) => {
             return (
               <Panel header={category.name} key={index}>
-              {category.books.map(book => {
+              {category.books.map((book:string, index:number) => {
                   return(
-                    <Row>
+                    <Row key={book + index.toString()}>
                       <Col span={16}><Title level={4}>{book}</Title></Col>
                       <Col span={8}><Button onClick={handleBookSelectClick} id={book}>Open</Button></Col>
 
