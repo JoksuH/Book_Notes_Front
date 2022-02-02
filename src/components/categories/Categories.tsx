@@ -45,6 +45,8 @@ const Categories: React.FC = () => {
 
   const navigate = useNavigate()
 
+  const itemsPerPage: number = 15
+
 
   useEffect(() => {
     fetch(`http://localhost:4000/categories/`).then((response) => {
@@ -52,7 +54,7 @@ const Categories: React.FC = () => {
         if (json) {
           SetCategories(json)
           SetResoultsAmount(json.length)
-          SetCurrentCategoryData(json.slice(0, 5))
+          SetCurrentCategoryData(json.slice(0, itemsPerPage))
         } else message.warn('No Categories Found!')
       })
     })
@@ -93,10 +95,10 @@ const Categories: React.FC = () => {
       if (Filter) {
         let filteredCategories: categoryData[] = Categories.filter((book) => book.name.toLowerCase().includes(Filter.toLowerCase()))
         SetResoultsAmount(filteredCategories.length)
-        SetCurrentCategoryData(filteredCategories.slice((page - 1) * 5, page * 5))
-        filteredCategories.length > 0 ? SetCurrentCategoryData(filteredCategories.slice(0, 5)) : SetCurrentCategoryData(undefined)
+        SetCurrentCategoryData(filteredCategories.slice((page - 1) * itemsPerPage, page * itemsPerPage))
+        filteredCategories.length > 0 ? SetCurrentCategoryData(filteredCategories.slice(0, itemsPerPage)) : SetCurrentCategoryData(undefined)
       } else {
-        SetCurrentCategoryData(Categories.slice((page - 1) * 5, page * 5))
+        SetCurrentCategoryData(Categories.slice((page - 1) * itemsPerPage, page * itemsPerPage))
         SetResoultsAmount(Categories.length)
       }
     }
@@ -107,7 +109,7 @@ const Categories: React.FC = () => {
     if (Categories) {
       let filteredCategories: categoryData[] = Categories.filter((book) => book.name.toLowerCase().includes(text.toLowerCase()))
       SetResoultsAmount(filteredCategories.length)
-      filteredCategories.length > 0 ? SetCurrentCategoryData(filteredCategories.slice(0, 5)) : SetCurrentCategoryData(undefined)
+      filteredCategories.length > 0 ? SetCurrentCategoryData(filteredCategories.slice(0, itemsPerPage)) : SetCurrentCategoryData(undefined)
     }
   }
 
@@ -152,7 +154,7 @@ const Categories: React.FC = () => {
           }
 
         </Collapse>
-          <Pagination defaultCurrent={1} defaultPageSize={5} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
+          <Pagination defaultCurrent={1} defaultPageSize={itemsPerPage} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
           </>
       ) : (
         <Empty style={{ marginTop: '15vh' }} description={<span>No Matching Categories Found!</span>} />
