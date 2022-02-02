@@ -12,12 +12,14 @@ import Statistics from './components/statistics/Statistics'
 const { Sider, Content } = Layout
 
 function App() {
+
+  console.log(document.body.scrollHeight)
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={false}>
+      <Sider trigger={null} collapsible collapsed={false} style={{ minHeight: '100vh', overflow: 'auto' }}>
         <Sidebar />
       </Sider>
-      <Content style={{ backgroundColor: '#f5f4f7', height: '100vh' }}>
+      <Content style={{ backgroundColor: '#f5f4f7', minHeight: '100vh', overflow: 'auto' }}>
         <div className="App">
           <Routes>
             <Route path="/addbook" element={<SearchBook />} />

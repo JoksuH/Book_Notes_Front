@@ -41,7 +41,6 @@ const { Title, Text } = Typography
 const { Sider, Content } = Layout
 
 const BookDataCard: React.FC<data> = ({ BookData, onBookAdd, small, rateable, index }) => {
-  console.log(BookData)
   const navigate = useNavigate()
 
   const [Saved, SetSaved] = useState<Boolean>(false)

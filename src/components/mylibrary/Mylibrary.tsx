@@ -35,6 +35,7 @@ const Mylibrary: React.FC = () => {
   const [Categories, SetCategories] = useState<categoryData[] | undefined>(undefined)
   const [ActiveCategory, SetActiveCategory] = useState<string>('')
   const [Filter, SetFilter] = useState<string | undefined>(undefined)
+  const [CurrentPage, SetCurrentPage] = useState<number>(1)
   const [ResultsAmount, SetResoultsAmount] = useState<number | undefined>(undefined)
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const Mylibrary: React.FC = () => {
   }, [ActiveCategory])
 
   const handlePageChange = (page: number) => {
+    SetCurrentPage(page)
     if (BooksData) {
       if (Filter) {
         let filteredBooks: bookData[] = BooksData.filter((book) => book.title.toLowerCase().includes(Filter.toLowerCase()) || book.author.toLowerCase().includes(Filter.toLowerCase()))
@@ -98,6 +100,7 @@ const Mylibrary: React.FC = () => {
     if (BooksData) {
       let filteredBooks: bookData[] = BooksData.filter((book) => book.title.toLowerCase().includes(text.toLowerCase()) || book.author.toLowerCase().includes(text.toLowerCase()))
       SetResoultsAmount(filteredBooks.length)
+      if (filteredBooks.length < 5) SetCurrentPage(1)
       filteredBooks.length > 0 ? SetCurrentPageBookData(filteredBooks.slice(0, 5)) : SetCurrentPageBookData(undefined)
     }
   }
@@ -136,7 +139,7 @@ const Mylibrary: React.FC = () => {
               </div>
             )
           })}
-          <Pagination defaultCurrent={1} defaultPageSize={5} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
+          <Pagination current={CurrentPage} defaultPageSize={5} total={ResultsAmount} onChange={handlePageChange} showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`} style={{ marginTop: '2vh' }} hideOnSinglePage={true} />
         </>
       ) : (
         <Empty style={{ marginTop: '15vh' }} description={<span>No Books Found!</span>} />
