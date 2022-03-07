@@ -4,7 +4,7 @@ Book Notes - To keep track of what you've read
 The idea of this project came from my grandma, who told me that she had kept a diary of books she had read throughout her life and how I should do the same.
 Inspired by her idea, I decided to code my own book notes tracker as a project.
 
-This is the frontend of that projectwhich was created using React, Typescript and using Ant Design for design and Framer Motion for animations.
+This is the frontend of that project which was created using React, Typescript and using Ant Design for design and Framer Motion for animations.
 
 The backend can be found at https://github.com/JoksuH/Book_Notes_Back
 
